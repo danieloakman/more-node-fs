@@ -11,12 +11,12 @@ const path_1 = require("path");
  * called recursively.
  * @param path The starting path.
  * @param callback Called for each path found inside the path parameter.
- * @param ignore If specified, then will not look at paths that match this regex.
+ * @param options Optional parameters:
+ *  - ignore: If specified, then will not look at paths that match this regex.
  */
-function forEachPathSync(path, callback, options) {
-    if (!fs_1.default.existsSync(path) || (options.ignore instanceof RegExp && options.ignore.test(path))) {
+function forEachPathSync(path, callback, options = {}) {
+    if (!fs_1.default.existsSync(path) || (options.ignore instanceof RegExp && options.ignore.test(path)))
         return;
-    }
     const stats = fs_1.default.statSync(path);
     if (stats.isFile())
         callback(path);
