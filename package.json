@@ -1,0 +1,25 @@
+{
+  "name": "more-node-fs",
+  "version": "0.1.0",
+  "description": "A utility which adds some more File System functions for Node.",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/danieloakman/More-Node-FS.git"
+  },
+  "author": "Daniel Oakman",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/danieloakman/More-Node-FS/issues"
+  },
+  "homepage": "https://github.com/danieloakman/More-Node-FS#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "^14.0.23",
+    "tslint": "^6.1.2",
+    "typescript": "^3.9.7"
+  }
+}
