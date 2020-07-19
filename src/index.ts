@@ -17,14 +17,9 @@ export function forEachPathSync (
   if (!fs.existsSync(path) || (options.ignore instanceof RegExp && options.ignore.test(path)))
     return;
 
-  const stats = fs.statSync(path);
-  if (stats.isFile())
-    callback(path, stats);
-  else if (stats.isDirectory()) {
+  const stats = fs.lstatSync(path);
+  if (stats.isDirectory())
     for (const pathInFolder of fs.readdirSync(path))
       forEachPathSync(join(path, pathInFolder), callback, options);
-    callback(path, stats);
-  } else if (stats.isSymbolicLink()) {
-    callback(path, stats);
-  }
+  callback(path, stats);
 }
