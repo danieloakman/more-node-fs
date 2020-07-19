@@ -4,12 +4,17 @@
   "description": "A utility which adds some more File System functions for Node.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "files": ["dist/**/*"],
   "scripts": {
     "build": "tsc --build",
     "lint": "tslint -p tsconfig.json",
     "test-js": "mocha test/**.test.js --reporter list",
     "test-ts": "ts-mocha test/**.test.ts --reporter list",
-    "test": "npm run test-js && npm run test-ts"
+    "test": "npm run test-js && npm run test-ts",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm run test && npm run lint",
+    "preversion": "npm run lint",
+    "postversion": "git push --tags"
   },
   "repository": {
     "type": "git",
