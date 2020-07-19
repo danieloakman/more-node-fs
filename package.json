@@ -6,7 +6,10 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc --build",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "tslint -p tsconfig.json",
+    "test-js": "mocha test/**.test.js --reporter list",
+    "test-ts": "ts-mocha test/**.test.ts --reporter list",
+    "test": "npm run test-js && npm run test-ts"
   },
   "repository": {
     "type": "git",
@@ -20,8 +23,17 @@
   "homepage": "https://github.com/danieloakman/More-Node-FS#readme",
   "dependencies": {},
   "devDependencies": {
+    "@types/mocha": "^8.0.0",
     "@types/node": "^14.0.23",
+    "husky": "^4.2.5",
+    "mocha": "^8.0.1",
+    "ts-mocha": "^7.0.0",
     "tslint": "^6.1.2",
     "typescript": "^3.9.7"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint && npm run test"
+    }
   }
 }
