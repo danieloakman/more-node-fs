@@ -1,5 +1,5 @@
 'use strict';
-const { forEachPathSync } = require('../dist/src/index');
+const { forEachPathSync } = require('../dist/index');
 const { join } = require('path');
 
 const paths = [];
