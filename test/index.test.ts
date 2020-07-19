@@ -1,11 +1,11 @@
 'use strict';
-const { forEachPathSync } = require('../dist/src/index');
-const { join } = require('path');
+import { forEachPathSync } from '../dist/index';
+import { join } from 'path';
 
 const paths = [];
 const symbolicLinks = [];
 forEachPathSync(join(__dirname, '../'), (path, stats) => {
-  if (stats.isSymbolicLink() || stats.is)
+  if (stats.isSymbolicLink())
     symbolicLinks.push(path);
   else
     paths.push(path);
