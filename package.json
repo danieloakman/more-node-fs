@@ -1,6 +1,6 @@
 {
   "name": "more-node-fs",
-  "version": "0.2.0",
+  "version": "0.4.0",
   "description": "A utility which adds some more File System functions for Node.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -42,5 +42,14 @@
     "hooks": {
       "pre-commit": "npm run lint && npm run test"
     }
-  }
+  },
+  "keywords": [
+    "fs",
+    "file system",
+    "utils",
+    "node-fs",
+    "recursive",
+    "readdir",
+    "recursive readdir"
+  ]
 }
