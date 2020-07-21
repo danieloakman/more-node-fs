@@ -27,29 +27,6 @@ This recursively loops through all files and directories within or at the specif
 })();
 ```
 
-### mapPath  & mapPathSync
-
-```js
-(async () => {
-  const { mapPath, mapPathSync } = require('more-node-fs');
-  const { readFileSync } = require('fs');
-
-  // Will find all javascript files within the somewhere directory:
-  const jsFiles = await mapPath('./path/to/somewhere', (path, stats) => {
-    return stats.isFile() && /\.js$/i.test(path)
-      ? path
-      : null;
-  }).filter(jsFilePath => jsFilePath);
-
-  // Will read and store all png files to images variable:
-  const images = mapPathSync('./path/to/somewhere/else', (path, stats) => {
-    return stats.isFile() && /\.png$/i.test(path))
-      ? readFileSync(path)
-      : null;
-  }).filter(image => image);
-})();
-```
-
 ### readdirDeep & readdirDeepSync
 
 Recursively finds all files, directories and other files and stores them into seperate properties.

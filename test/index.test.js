@@ -55,32 +55,6 @@ describe('javascript', async () => {
     assert(paths.length);
   });
 
-  it('mapPath', async () => {
-    const paths = await moreNodeFS.mapPath(
-      STARTING_PATH,
-      path => path + 'do something',
-      { ignore: IGNORE_REGEX }
-    );
-    assert(paths.length && paths.every(path => path.includes('do something')));
-  });
-
-  it('mapPathSync', () => {
-    const paths = moreNodeFS.mapPathSync(
-      STARTING_PATH,
-      path => path + 'do something',
-      { ignore: IGNORE_REGEX }
-    );
-    assert(paths.length && paths.every(path => path.includes('do something')));
-    const jsFiles = moreNodeFS.mapPathSync(
-      STARTING_PATH,
-      (path, stats) => {
-        return stats.isFile() && /\.js$/i.test(path) ? fs.readFileSync(path).toString() : null;
-      },
-      { ignore: IGNORE_REGEX }
-    );
-    assert(jsFiles.length);
-  });
-
   it('readdirDeep', async () => {
     const result = await moreNodeFS.readdirDeep(STARTING_PATH, { ignore: IGNORE_REGEX });
     assert(result.files.length);
