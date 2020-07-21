@@ -42,5 +42,14 @@
     "hooks": {
       "pre-commit": "npm run lint && npm run test"
     }
-  }
+  },
+  "keywords": [
+    "fs",
+    "file system",
+    "utils",
+    "node-fs",
+    "recursive",
+    "readdir",
+    "recursive readdir"
+  ]
 }
