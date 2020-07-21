@@ -70,8 +70,7 @@ export async function readdirDeep (
   options: { ignore?: RegExp } = {}
 ): Promise<{ files: string[], dirs: string[], others: string[] }> {
   const result = { files: [], dirs: [], others: [] };
-  await forEachPath(path, async pathInFolder => {
-    const stats = await stat(pathInFolder);
+  await forEachPath(path, async (pathInFolder, stats) => {
     if (stats.isFile())
       result.files.push(pathInFolder);
     else if (stats.isDirectory())
@@ -95,8 +94,7 @@ export function readdirDeepSync (
   options: { ignore?: RegExp } = {}
 ): { files: string[], dirs: string[], others: string[] } {
   const result = { files: [], dirs: [], others: [] };
-  forEachPathSync(path, pathInFolder => {
-    const stats = fs.statSync(pathInFolder);
+  forEachPathSync(path, (pathInFolder, stats) => {
     if (stats.isFile())
       result.files.push(pathInFolder);
     else if (stats.isDirectory())
