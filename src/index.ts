@@ -56,6 +56,49 @@ export function forEachPathSync (
 }
 
 /**
+ * Asyncronously loop through all paths found in or at the path parameter and return each
+ * element that is returned inside the callback parameter. This function is called recursively.
+ * @param path The starting path.
+ * @param callback Called for each path found inside the path parameter. Can be
+ * and async function.
+ * @param options Optional parameters:
+ *  - ignore: If specified, then will not look at paths that match this regex.
+ * @note This is about ~30% slower compared to the synchronous version of this function. So use
+ * that instead of this unless it's necessary.
+ */
+export async function mapPath (
+  path: string,
+  callback: (path: string, stats: fs.Stats) => void,
+  options: { ignore?: RegExp } = {}
+): Promise<string[]> {
+  const result = [];
+  await forEachPath(path, async (pathInFolder, stats) => {
+    result.push((await callback(pathInFolder, stats)));
+  }, options);
+  return result;
+}
+
+/**
+ * Syncronously loop through all paths found in or at the path parameter and return each
+ * element that is returned inside the callback parameter. This function is called recursively.
+ * @param path The starting path.
+ * @param callback Called for each path found inside the path parameter.
+ * @param options Optional parameters:
+ *  - ignore: If specified, then will not look at paths that match this regex.
+ */
+export function mapPathSync (
+  path: string,
+  callback: (path: string, stats: fs.Stats) => void,
+  options: { ignore?: RegExp } = {}
+): string[] {
+  const result = [];
+  forEachPathSync(path, (pathInFolder, stats) => {
+    result.push(callback(pathInFolder, stats));
+  }, options);
+  return result;
+}
+
+/**
  * Asyncronously reads and returns all file and folder paths inside of the path parameter.
  * @param path The path to read inside of.
  * @param options Optional parameters:
