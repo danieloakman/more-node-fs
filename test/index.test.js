@@ -29,7 +29,7 @@ function createRandomFiles (path, numOfFiles, numOfDirs) {
     createRandomFiles(join(path, randName()), randInt(1, 10), numOfDirs - 1);
 }
 
-describe('typescript', async () => {
+describe('javascript', async () => {
   it('forEachPath', async () => {
     const paths = [];
     await moreNodeFS.forEachPath(STARTING_PATH, path => {
