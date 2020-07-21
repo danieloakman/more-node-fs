@@ -6,6 +6,7 @@ import { promisify } from 'util';
 const stat = promisify(fs.stat);
 const readdir = promisify(fs.readdir);
 const unlink = promisify(fs.unlink);
+const rmdir = promisify(fs.rmdir);
 
 /**
  * Asyncronously loop through all paths found in or at the path parameter. This function is
@@ -14,8 +15,6 @@ const unlink = promisify(fs.unlink);
  * @param callback Called for each path found inside the path parameter. Can be an async function.
  * @param options Optional parameters:
  *  - ignore: If specified, then will not look at paths that match this regex.
- * @note This is about ~30% slower compared to the synchronous version of this function. So use
- * that instead of this unless it's necessary.
  */
 export async function forEachPath (
   path: string,
@@ -63,8 +62,6 @@ export function forEachPathSync (
  * and async function.
  * @param options Optional parameters:
  *  - ignore: If specified, then will not look at paths that match this regex.
- * @note This is about ~30% slower compared to the synchronous version of this function. So use
- * that instead of this unless it's necessary.
  */
 export async function mapPath (
   path: string,
@@ -105,8 +102,6 @@ export function mapPathSync (
  *  - ignore: If specified, then will not look at paths that match this regex.
  * @returns Every path inside of the path parameter seperated into files, directories, and anything
  * else is put in the others property.
- * @note This is about ~30% slower compared to the synchronous version of this function. So use
- * that instead of this unless it's necessary.
  */
 export async function readdirDeep (
   path: string,
@@ -146,4 +141,32 @@ export function readdirDeepSync (
       result.others.push(pathInFolder);
   }, options);
   return result;
+}
+
+/**
+ * Asynchronously deletes files and folders/directories. If path is to a directory then it will
+ * recursively delete all files within it first and then delete the directory itself.
+ * @param path Path to the file or directory.
+ */
+export async function deleteDeep (path: string): Promise<void> {
+  await forEachPath(path, async (pathInFolder, stats) => {
+    if (stats.isDirectory())
+      await rmdir(pathInFolder);
+    else
+      await unlink(pathInFolder);
+  });
+}
+
+/**
+ * Synchronously deletes files and folders/directories. If path is to a directory then it will
+ * recursively delete all files within it first and then delete the directory itself.
+ * @param path Path to the file or directory.
+ */
+export function deleteDeepSync (path: string): void {
+  forEachPathSync(path, (pathInFolder, stats) => {
+    if (stats.isDirectory())
+      fs.rmdirSync(pathInFolder);
+    else
+      fs.unlinkSync(pathInFolder);
+  });
 }
