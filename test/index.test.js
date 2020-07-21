@@ -71,6 +71,14 @@ describe('javascript', async () => {
       { ignore: IGNORE_REGEX }
     );
     assert(paths.length && paths.every(path => path.includes('do something')));
+    const jsFiles = moreNodeFS.mapPathSync(
+      STARTING_PATH,
+      (path, stats) => {
+        return stats.isFile() && /\.js$/i.test(path) ? fs.readFileSync(path).toString() : null;
+      },
+      { ignore: IGNORE_REGEX }
+    );
+    assert(jsFiles.length);
   });
 
   it('readdirDeep', async () => {
