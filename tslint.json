@@ -6,7 +6,8 @@
     "no-console": false,
     "curly": false,
     "semicolon": true,
-    "max-line-length": [true, 100]
+    "max-line-length": [true, 100],
+    "no-var-requires": false
   },
   "rulesDirectory": []
 }
