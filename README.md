@@ -1,7 +1,6 @@
 # More-Node-FS
 
-A utility which adds some more File System functions for NodeJS. It's written in typescript and is well documented with types and descriptions.
-There are synchronous and asynchronous versions of each function. Note the synchronous versions are faster but the asynchronous versions are still provided for cases like running in a server, etc.
+A utility which adds some more File System functions for NodeJS. It's written in typescript and is well documented with types and descriptions. There are synchronous and asynchronous versions of each function. Note the synchronous versions are faster but the asynchronous versions are still provided for cases like running in a server, etc. There are extra options for filtering paths using regular expressions and also sorting the order of them as well.
 
 ## Documentation
 
@@ -19,7 +18,7 @@ This recursively loops through all files and directories within or at the specif
       console.log(path);
   });
 
-  // Will log all pdf files withing the else directory:
+  // Will log all pdf files within the else directory:
   forEachPathSync('./path/to/somewhere/else', (path, stats) => {
     if (stats.isFile() && /\.pdf$/i.test(path))
       console.log(path);
