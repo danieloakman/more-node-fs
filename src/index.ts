@@ -7,6 +7,11 @@ const stat = promisify(fs.stat);
 const readdir = promisify(fs.readdir);
 const unlink = promisify(fs.unlink);
 const rmdir = promisify(fs.rmdir);
+// const mkdir = promisify(fs.mkdir);
+// const readFile = promisify(fs.readFile);
+// const writeFile = promisify(fs.writeFile);
+// const copyFile = promisify(fs.copyFile);
+// const appendFile = promisify(fs.appendFile);
 
 interface PathOptions {
   /** If specified, then will not look at paths that match this regex. */
@@ -95,13 +100,13 @@ export function forEachPathSync (
  * element that is returned inside the callback parameter. This function is called recursively.
  * @param path The starting path.
  * @param callback Called for each path found inside the path parameter. Can be
- * and async function.
+ * an async function.
  */
 export async function mapPath (
   path: string,
   callback: (path: string, stats: fs.Stats) => void,
   options: PathOptions = {}
-): Promise<string[]> {
+): Promise<any[]> {
   const result = [];
   await forEachPath(path, async (pathInFolder, stats) => {
     result.push((await callback(pathInFolder, stats)));
@@ -119,7 +124,7 @@ export function mapPathSync (
   path: string,
   callback: (path: string, stats: fs.Stats) => void,
   options: PathOptions = {}
-): string[] {
+): any[] {
   const result = [];
   forEachPathSync(path, (pathInFolder, stats) => {
     result.push(callback(pathInFolder, stats));
