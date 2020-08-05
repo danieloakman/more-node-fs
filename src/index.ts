@@ -15,10 +15,11 @@ interface PathOptions {
   /** If specified, then will only look at paths that match this regex. */
   match?: RegExp;
 
-  /** Specify a comparison function that is used when sorting each found directory.
-   *  Note: the paths inside of a directory will still come before the directory itself, no matter
-   *  what the comparison function does. For example:
-   *  ['somedir/fileA', 'somedir/fileB', 'somedir/fileC', 'somedir/']
+  /**
+   * Specify a comparison function that is used when sorting each found directory.
+   * Note: the paths inside of a directory will still come before the directory itself, no matter
+   * what the comparison function does. For example:
+   * ['somedir/fileA', 'somedir/fileB', 'somedir/fileC', 'somedir/']
    */
   sort?: (a: string, b: string) => number;
 }
