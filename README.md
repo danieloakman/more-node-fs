@@ -12,9 +12,9 @@ Recursively finds all files, directories and other files and stores them into se
 - deleteDeep & deleteDeepSync:
 Deletes files and directories. If a directory is specified then it will recursively delete everything inside of it as well.
 - Extra options available to forEachPath & readdirDeep:
--- ignore: If specified, then will not look at paths that match this regex. This and the match option can significantly speed up path searches.
--- match: If specified, then will only look at paths that match this regex.
--- sort: Specify a comparison function that is used when sorting each found directory. Note: the paths inside of a directory will still come before the directory itself, no matter what the comparison function does. For example: ['somedir/fileA', 'somedir/fileB', 'somedir/fileC', 'somedir/'].
+  - ignore: If specified, then will not look at paths that match this regex. This and the match option can significantly speed up path searches.
+  - match: If specified, then will only look at paths that match this regex.
+  - sort: Specify a comparison function that is used when sorting each found directory. Note: the paths inside of a directory will still come before the directory itself, no matter what the comparison function does. For example: ['somedir/fileA', 'somedir/fileB', 'somedir/fileC', 'somedir/'].
 
 ### Code Demo
 
