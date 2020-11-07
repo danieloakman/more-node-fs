@@ -40,6 +40,7 @@ class ReaddirResult {
  * called recursively.
  * @param path The starting path.
  * @param callback Called for each path found inside the path parameter. Can be an async function.
+ * @param options Path options.
  */
 export async function forEachPath (
   path: string,
@@ -68,6 +69,7 @@ export async function forEachPath (
  * called recursively.
  * @param path The starting path.
  * @param callback Called for each path found inside the path parameter.
+ * @param options Path options.
  */
 export function forEachPathSync (
   path: string,
@@ -94,6 +96,7 @@ export function forEachPathSync (
 /**
  * Asyncronously reads and returns all file and folder paths inside of the path parameter.
  * @param path The path to read inside of.
+ * @param options Path options.
  * @returns Every path inside of the path parameter seperated into files, directories, and anything
  * else is put in the others property.
  */
@@ -116,6 +119,7 @@ export async function readdirDeep (
 /**
  * Syncronously reads and returns all file and folder paths inside of the path parameter.
  * @param path The path to read inside of.
+ * @param options Path options.
  * @returns Every path inside of the path parameter seperated into files, directories, and anything
  * else is put in the others property.
  */
