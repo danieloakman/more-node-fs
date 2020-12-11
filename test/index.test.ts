@@ -89,4 +89,11 @@ describe('typescript', async () => {
     moreNodeFS.deleteDeepSync(tempdir);
     assert(!fs.existsSync(tempdir));
   }).slow(1000);
+
+  it('walkdir', () => {
+    const paths = [...moreNodeFS.walkdir(STARTING_PATH, {
+      ignore: IGNORE_REGEX, sort: (a, b) => a > b ? -1 : (a < b ? 1 : 0)
+    })];
+    assert(paths.length);
+  });
 });

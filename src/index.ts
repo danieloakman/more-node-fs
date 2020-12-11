@@ -17,8 +17,8 @@ interface PathOptions {
 
   /**
    * Specify a comparison function that is used when sorting each found directory.
-   * Note: the paths inside of a directory will still come before the directory itself, no matter
-   * what the comparison function does. For example:
+   * Note: this doesn't affect the search order, i.e. breadth first or depth first. It only sorts
+   * each directory separately. For example:
    * ['somedir/fileA', 'somedir/fileB', 'somedir/fileC', 'somedir/']
    */
   sort?: (a: string, b: string) => number;
@@ -37,7 +37,7 @@ class ReaddirResult {
 
 /**
  * Asyncronously loop through all paths found in or at the path parameter. This function is
- * called recursively.
+ * called recursively. Uses depth first search.
  * @param path The starting path.
  * @param callback Called for each path found inside the path parameter. Can be an async function.
  * @param options Path options.
@@ -66,7 +66,7 @@ export async function forEachPath (
 
 /**
  * Synchronously loop through all paths found in or at the path parameter. This function is
- * called recursively.
+ * called recursively. Uses depth first search.
  * @param path The starting path.
  * @param callback Called for each path found inside the path parameter.
  * @param options Path options.
@@ -165,4 +165,48 @@ export function deleteDeepSync (path: string): void {
     else
       fs.unlinkSync(pathInFolder);
   });
+}
+
+function passesRegex (path: string, options: PathOptions = {}) {
+  return (!options.ignore || (options.ignore instanceof RegExp && !options.ignore.test(path))) &&
+    (!options.match || (options.match instanceof RegExp && options.match.test(path)));
+}
+
+/**
+ * Iterator for recursively searching through a directory. Unlike forEachPath, this uses breadth
+ * first search.
+ * @param path The starting path.
+ * @param options Path options.
+ */
+export function* walkdir (
+  path: string,
+  options: PathOptions = {}
+): Generator<{
+  stats: fs.Stats;
+  path: string;
+}, void, unknown> {
+  if (!fs.existsSync(path) || !passesRegex(path, options)) return;
+
+  let stats = fs.statSync(path);
+  yield { stats, path };
+
+  if (stats.isDirectory()) {
+    const stack: string[] = [];
+    stack.push(path);
+    while (stack.length) {
+      const dir = stack.pop();
+      const pathsInDir = fs.readdirSync(dir);
+      if (options.sort instanceof Function)
+        pathsInDir.sort(options.sort);
+      for (path of pathsInDir) {
+        path = join(dir, path);
+        if (passesRegex(path, options)) {
+          stats = fs.statSync(path);
+          yield { stats, path };
+          if (stats.isDirectory())
+            stack.push(path);
+        }
+      }
+    }
+  }
 }
