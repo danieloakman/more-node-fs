@@ -13,10 +13,13 @@
     "test-js": "mocha test/**.test.js --reporter list",
     "test-ts": "ts-mocha test/**.test.ts --reporter list",
     "test": "npm run test-js && npm run test-ts",
+    "v-patch": "npm version patch -m \"Upgrade package version to v%s\"",
+    "v-minor": "npm version minor -m \"Upgrade package version to v%s\"",
+    "v-major": "npm version major -m \"Upgrade package version to v%s\"",
     "prepare": "npm run build",
     "prepublishOnly": "npm run test && npm run lint",
     "preversion": "npm run lint",
-    "postversion": "git push --tags"
+    "postversion": "git push --follow-tags"
   },
   "repository": {
     "type": "git",
