@@ -26,7 +26,7 @@ new Benchmark.Suite('index')
       result.push(path);
     }
   })
-  .add('spread walkdir', () => {
-    const result = [...walkdir(STARTING_PATH, { ignore: IGNORE_REGEX })];
-  })
+  // .add('spread walkdir', () => {
+  //   const result = [...walkdir(STARTING_PATH, { ignore: IGNORE_REGEX })];
+  // })
   .run();
