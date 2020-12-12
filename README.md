@@ -11,8 +11,7 @@ Recursively loop through all files and directories within or at the specified pa
 Recursively finds all files, directories and other files and stores them into separate properties.
 - deleteDeep & deleteDeepSync:
 Deletes files and directories. If a directory is specified then it will recursively delete everything inside of it as well.
-- walkdir: Generator function that iterates through a directory and any sub directories. Unlike the
-the other functions, this uses breadth first search.
+- walkdir: Generator function that iterates through a directory and any sub directories. Unlike the other functions, this uses breadth first search.
 - Extra options available to forEachPath, readdirDeep and walkdir:
   - ignore: If specified, then will not look at paths that match this regex. This and the match option can significantly speed up path searches.
   - match: If specified, then will only look at paths that match this regex.
