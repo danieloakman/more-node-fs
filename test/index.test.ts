@@ -6,7 +6,7 @@ const {
   // deepStrictEqual: equal
 } = require('assert');
 
-const IGNORE_REGEX = /\.git|node_modules/i;
+const IGNORE_REGEX = /node_modules/i;
 const STARTING_PATH = join(__dirname, '../');
 
 function randName () {
@@ -96,4 +96,52 @@ describe('typescript', async () => {
     })];
     assert(paths.length);
   });
+
+  it('results are the same', async () => {
+    const forEachPathResult = [];
+    await moreNodeFS.forEachPath(
+      STARTING_PATH, path => forEachPathResult.push(path), { ignore: IGNORE_REGEX }
+    );
+
+    const forEachPathSyncResult = [];
+    moreNodeFS.forEachPathSync(
+      STARTING_PATH, path => forEachPathSyncResult.push(path), { ignore: IGNORE_REGEX }
+    );
+
+    let readdirDeepResult;
+    {
+      const { files, dirs, others } = await moreNodeFS.readdirDeep(
+        STARTING_PATH, { ignore: IGNORE_REGEX }
+      );
+      readdirDeepResult = [...files, ...dirs, ...others];
+    }
+
+    let readdirDeepSyncResult;
+    {
+      const { files, dirs, others } = moreNodeFS.readdirDeepSync(
+        STARTING_PATH, { ignore: IGNORE_REGEX }
+      );
+      readdirDeepSyncResult = [...files, ...dirs, ...others];
+    }
+
+    const walkdirResult = [];
+    for (const { path } of moreNodeFS.walkdir(STARTING_PATH, { ignore: IGNORE_REGEX })) {
+      walkdirResult.push(path);
+    }
+
+    assert(
+      [
+        forEachPathResult.length,
+        forEachPathSyncResult.length,
+        readdirDeepResult.length,
+        readdirDeepSyncResult.length
+      ].every(length => length === walkdirResult.length)
+    )
+    for (const path of walkdirResult) {
+      assert(
+        forEachPathResult.includes(path) && forEachPathSyncResult.includes(path) &&
+        readdirDeepResult.includes(path) && readdirDeepSyncResult.includes(path)
+      );
+    }
+  }).timeout(10000);
 });
