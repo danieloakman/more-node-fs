@@ -37,6 +37,12 @@ for (const { stats, path } of walkdir('./path/to/somewhere')) {
 }
 ```
 
+## Benchmark
+
+`forEachPathSync x 394 ops/sec, ±3 ops/sec or ±0.85% (90 runs sampled)`
+`readdirDeepSync x 401 ops/sec, ±1 ops/sec or ±0.37% (92 runs sampled)`
+`walkdir x 897 ops/sec, ±5 ops/sec or ±0.58% (91 runs sampled)`
+
 ## Authors or Acknowledgments
 
 Daniel Oakman
