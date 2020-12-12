@@ -13,6 +13,7 @@
     "test-js": "mocha test/**.test.js --reporter list",
     "test-ts": "ts-mocha test/**.test.ts --reporter list",
     "test": "npm run test-js && npm run test-ts",
+    "bm": "node benchmark/index.benchmark.js",
     "v-patch": "npm version patch -m \"Upgrade package version to v%s\"",
     "v-minor": "npm version minor -m \"Upgrade package version to v%s\"",
     "v-major": "npm version major -m \"Upgrade package version to v%s\"",
@@ -35,6 +36,7 @@
   "devDependencies": {
     "@types/mocha": "^8.0.0",
     "@types/node": "^14.0.23",
+    "benchmark": "^2.1.4",
     "husky": "^4.2.5",
     "mocha": "^8.2.1",
     "ts-mocha": "^7.0.0",
