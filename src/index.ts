@@ -191,10 +191,10 @@ export function* walkdir (
   yield { stats, path };
 
   if (stats.isDirectory()) {
-    const stack: string[] = [];
-    stack.push(path);
-    while (stack.length) {
-      const dir = stack.pop();
+    const queue: string[] = [];
+    queue.push(path);
+    while (queue.length) {
+      const dir = queue.shift();
       const pathsInDir = fs.readdirSync(dir);
       if (options.sort instanceof Function)
         pathsInDir.sort(options.sort);
@@ -204,7 +204,7 @@ export function* walkdir (
           stats = fs.statSync(path);
           yield { stats, path };
           if (stats.isDirectory())
-            stack.push(path);
+            queue.push(path);
         }
       }
     }
