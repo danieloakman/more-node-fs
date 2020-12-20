@@ -95,6 +95,7 @@ export function forEachPathSync (
 
 /**
  * Asyncronously reads and returns all file and folder paths inside of the path parameter.
+ * Internally this uses forEachPath.
  * @param path The path to read inside of.
  * @param options Path options.
  * @returns Every path inside of the path parameter seperated into files, directories, and anything
@@ -117,7 +118,8 @@ export async function readdirDeep (
 }
 
 /**
- * Syncronously reads and returns all file and folder paths inside of the path parameter.
+ * Syncronously reads and returns all file and folder paths inside of the path parameter. Internally
+ * this uses walkdir.
  * @param path The path to read inside of.
  * @param options Path options.
  * @returns Every path inside of the path parameter seperated into files, directories, and anything
@@ -128,14 +130,14 @@ export function readdirDeepSync (
   options: PathOptions = {}
 ): ReaddirResult {
   const result = new ReaddirResult();
-  forEachPathSync(path, (pathInFolder, stats) => {
+  for (const { stats, path: pathInFolder } of walkdir(path, options)) {
     if (stats.isFile())
       result.files.push(pathInFolder);
     else if (stats.isDirectory())
       result.dirs.push(pathInFolder);
     else
       result.others.push(pathInFolder);
-  }, options);
+  }
   return result;
 }
 
@@ -145,12 +147,12 @@ export function readdirDeepSync (
  * @param path Path to the file or directory.
  */
 export async function deleteDeep (path: string): Promise<void> {
-  await forEachPath(path, async (pathInFolder, stats) => {
+  for (const { stats, path: pathInFolder } of walkdir(path, { search: 'dfs' })) {
     if (stats.isDirectory())
       await rmdir(pathInFolder);
     else
       await unlink(pathInFolder);
-  });
+  }
 }
 
 /**
@@ -159,12 +161,12 @@ export async function deleteDeep (path: string): Promise<void> {
  * @param path Path to the file or directory.
  */
 export function deleteDeepSync (path: string): void {
-  forEachPathSync(path, (pathInFolder, stats) => {
+  for (const { stats, path: pathInFolder } of walkdir(path, { search: 'dfs' })) {
     if (stats.isDirectory())
       fs.rmdirSync(pathInFolder);
     else
       fs.unlinkSync(pathInFolder);
-  });
+  }
 }
 
 function passesRegex (path: string, options: PathOptions = {}) {
@@ -172,21 +174,13 @@ function passesRegex (path: string, options: PathOptions = {}) {
     (!options.match || (options.match instanceof RegExp && options.match.test(path)));
 }
 
-/**
- * Iterator for recursively searching through a directory. Unlike forEachPath, this uses breadth
- * first search.
- * @param path The starting path.
- * @param options Path options.
- */
-export function* walkdir (
+function* iterativeBFS (
   path: string,
   options: PathOptions = {}
 ): Generator<{
   stats: fs.Stats;
   path: string;
 }, void, unknown> {
-  if (!fs.existsSync(path) || !passesRegex(path, options)) return;
-
   let stats = fs.statSync(path);
   yield { stats, path };
 
@@ -209,4 +203,77 @@ export function* walkdir (
       }
     }
   }
+}
+
+function* iterativeDFS (path: string,
+  options: PathOptions = {}
+): Generator<{
+  stats: fs.Stats;
+  path: string;
+}, void, unknown> {
+  let stats = fs.statSync(path);
+  if (!stats.isDirectory()) {
+    yield { stats, path };
+    return;
+  }
+
+  const stack = [{ stats, path }]; // A stack for everything
+  const dirStack = [{ stats, path }]; // A stack for all unvisited directories
+
+  while (dirStack.length) {
+    const dir = dirStack.pop();
+    const dirStackLength = dirStack.length;
+    const pathsInDir = fs.readdirSync(dir.path);
+    if (options.sort instanceof Function)
+      pathsInDir.sort(options.sort);
+    for (path of pathsInDir) {
+      path = join(dir.path, path);
+      if (passesRegex(path, options)) {
+        stats = fs.statSync(path);
+        stack.push({ stats, path });
+        if (stats.isDirectory()) {
+          dirStack.push({ stats, path });
+        }
+      }
+    }
+
+    // If dir had no other directories inside of it:
+    if (dirStack.length && dirStack.length === dirStackLength) {
+      while (stack.length && stack[stack.length - 1].path !== dirStack[dirStack.length - 1].path)
+        yield stack.pop();
+    }
+  }
+
+  // Finish emptying the rest of the stack:
+  while (stack.length)
+    yield stack.pop();
+}
+
+interface WalkdirOptions extends PathOptions {
+  /**
+   * The type of search method to use. Either depth first search (DFS) or breadth first
+   * search (BFS). BFS is default.
+   */
+  search?: 'dfs'|'bfs';
+}
+
+/**
+ * Iterator for searching through a directory and any sub directories. Can to use either depth first
+ * search of breadth first search. BFS is default.
+ * @param path The starting path.
+ * @param options Path options.
+ */
+export function walkdir (
+  path: string,
+  options: WalkdirOptions = { search: 'bfs' }
+): Generator<{
+  stats: fs.Stats;
+  path: string;
+}, void, unknown> {
+  if (!fs.existsSync(path) || !passesRegex(path, options)) return;
+
+  if (options.search === 'dfs')
+    return iterativeDFS(path, options);
+  else
+    return iterativeBFS(path, options);
 }

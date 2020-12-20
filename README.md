@@ -6,12 +6,12 @@ A utility which adds some more File System functions for NodeJS. It's written in
 ## List Of Features
 
 - forEachPath & forEachPathSync:
-Recursively loop through all files and directories within or at the specified path and calls the callback given for each of them. Uses depth first search.
+Recursively loop through all files and directories within or at the specified path and calls the callback given for each of them. Uses a recursive depth first search.
 - readdirDeep & readdirDeepSync:
-Recursively finds all files, directories and other files and stores them into separate properties.
+Recursively finds all files, directories and other files and stores them into separate properties. Internally, readdirDeep uses forEachPath and readdirDeepSync uses walkdir.
 - deleteDeep & deleteDeepSync:
 Deletes files and directories. If a directory is specified then it will recursively delete everything inside of it as well.
-- walkdir: Generator function that iterates through a directory and any sub directories. Unlike the other functions, this uses breadth first search.
+- walkdir: Generator function that iterates through a directory and any sub directories. It can use either depth or breadth first search via an option property called 'search'. It is much quicker than the forEachPath variants but it's synchronous. Neither search option is faster than the other, but 'bfs' is somewhat more memory efficient.
 - Extra options available to forEachPath, readdirDeep and walkdir:
   - ignore: If specified, then will not look at paths that match this regex. This and the match option can significantly speed up path searches.
   - match: If specified, then will only look at paths that match this regex.
@@ -31,7 +31,7 @@ forEachPathSync('./path/to/somewhere', (path, stats) => {
 
 // Same thing but using walkdir:
 const images2 = [];
-for (const { stats, path } of walkdir('./path/to/somewhere')) {
+for (const { stats, path } of walkdir('./path/to/somewhere'), { search: 'dfs' }) {
   if (stats.isFile() &&  /\.png$/i.test(path))
     images2.push(path);
 }
@@ -39,9 +39,12 @@ for (const { stats, path } of walkdir('./path/to/somewhere')) {
 
 ## Benchmark
 
-`forEachPathSync x 394 ops/sec, ±3 ops/sec or ±0.85% (90 runs sampled)`
-`readdirDeepSync x 401 ops/sec, ±1 ops/sec or ±0.37% (92 runs sampled)`
-`walkdir x 897 ops/sec, ±5 ops/sec or ±0.58% (91 runs sampled)`
+```
+forEachPathSync x 410 ops/sec, ±2 ops/sec or ±0.52% (92 runs sampled)
+readdirDeepSync x 925 ops/sec, ±3 ops/sec or ±0.36% (95 runs sampled)
+walkdir x 930 ops/sec, ±3 ops/sec or ±0.30% (95 runs sampled)
+Fastest is walkdir
+```
 
 ## Authors or Acknowledgments
 
