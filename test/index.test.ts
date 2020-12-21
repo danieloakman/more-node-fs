@@ -2,8 +2,8 @@ import * as moreNodeFS from '../dist/index';
 import { join } from 'path';
 import * as fs from 'fs';
 const {
-  ok: assert
-  // deepStrictEqual: equal
+  ok: assert,
+  deepStrictEqual: equal
 } = require('assert');
 
 const IGNORE_REGEX = /node_modules/i;
@@ -95,6 +95,20 @@ describe('typescript', async () => {
       ignore: IGNORE_REGEX, sort: (a, b) => a > b ? -1 : (a < b ? 1 : 0)
     })];
     assert(paths.length);
+
+    const paths2 = [];
+    for (const { path } of moreNodeFS.walkdir('./nowhere')) {
+      paths2.push(path);
+    }
+    equal(paths2.length, 0);
+    for (const { path } of moreNodeFS.walkdir(join(process.cwd(), 'LICENSE'))) {
+      paths2.push(path);
+    }
+    assert(paths2.length, 1);
+    for (const { path } of moreNodeFS.walkdir(join(process.cwd(), 'LICENSE'), { search: 'dfs' })) {
+      paths2.push(path);
+    }
+    assert(paths2.length, 2);
   });
 
   it('results are the same', async () => {

@@ -2,8 +2,8 @@
 const moreNodeFS = require('../dist/index');
 const { join } = require('path');
 const {
-  ok: assert
-  // deepStrictEqual: equal
+  ok: assert,
+  deepStrictEqual: equal
 } = require('assert');
 const fs = require('fs');
 
@@ -95,6 +95,20 @@ describe('javascript', async () => {
       ignore: IGNORE_REGEX, sort: (a, b) => a > b ? -1 : (a < b ? 1 : 0)
     })];
     assert(paths.length);
+
+    const paths2 = [];
+    for (const { path } of moreNodeFS.walkdir('./nowhere')) {
+      paths2.push(path);
+    }
+    equal(paths2.length, 0);
+    for (const { path } of moreNodeFS.walkdir(join(process.cwd(), 'LICENSE'))) {
+      paths2.push(path);
+    }
+    assert(paths2.length, 1);
+    for (const { path } of moreNodeFS.walkdir(join(process.cwd(), 'LICENSE'), { search: 'dfs' })) {
+      paths2.push(path);
+    }
+    assert(paths2.length, 2);
   });
 
   it('results are the same', async () => {

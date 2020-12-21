@@ -270,7 +270,8 @@ export function walkdir (
   stats: fs.Stats;
   path: string;
 }, void, unknown> {
-  if (!fs.existsSync(path) || !passesRegex(path, options)) return;
+  if (!fs.existsSync(path) || !passesRegex(path, options))
+    return (function* () {})();
 
   if (options.search === 'dfs')
     return iterativeDFS(path, options);
