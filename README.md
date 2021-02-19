@@ -25,14 +25,14 @@ const { forEachPathSync, walkdir } = require('more-node-fs');
 // Find all png files within a directory:
 const images = [];
 forEachPathSync('./path/to/somewhere', (path, stats) => {
-  if (stats.isFile() &&  /\.png$/i.test(path))
+  if (stats.isFile() && /\.png$/i.test(path))
     images.push(path);
 });
 
 // Same thing but using walkdir:
 const images2 = [];
-for (const { stats, path } of walkdir('./path/to/somewhere'), { search: 'dfs' }) {
-  if (stats.isFile() &&  /\.png$/i.test(path))
+for (const { path, stats } of walkdir('./path/to/somewhere'), { search: 'dfs' }) {
+  if (stats.isFile() && /\.png$/i.test(path))
     images2.push(path);
 }
 ```
