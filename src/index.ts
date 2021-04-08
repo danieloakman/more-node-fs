@@ -244,7 +244,7 @@ function* iterativeDFS (path: string,
     yield stack.pop();
 }
 
-interface WalkdirOptions extends PathOptions {
+export interface WalkdirOptions extends PathOptions {
   /**
    * The type of search method to use. Either depth first search (DFS) or breadth first
    * search (BFS). BFS is default.
