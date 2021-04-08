@@ -8,7 +8,7 @@ const readdir = promisify(fs.readdir);
 const unlink = promisify(fs.unlink);
 const rmdir = promisify(fs.rmdir);
 
-interface PathOptions {
+export interface PathOptions {
   /** If specified, then will not look at paths that match this regex. */
   ignore?: RegExp;
 
@@ -24,15 +24,10 @@ interface PathOptions {
   sort?: (a: string, b: string) => number;
 }
 
-class ReaddirResult {
+export interface ReaddirResult {
   files: string[];
   dirs: string[];
   others: string[];
-  constructor () {
-    this.files = [];
-    this.dirs = [];
-    this.others = [];
-  }
 }
 
 /**
@@ -105,7 +100,7 @@ export async function readdirDeep (
   path: string,
   options: PathOptions = {}
 ): Promise<ReaddirResult> {
-  const result = new ReaddirResult();
+  const result: ReaddirResult = { files: [], dirs: [], others: [] };
   await forEachPath(path, async (pathInFolder, stats) => {
     if (stats.isFile())
       result.files.push(pathInFolder);
@@ -129,7 +124,7 @@ export function readdirDeepSync (
   path: string,
   options: PathOptions = {}
 ): ReaddirResult {
-  const result = new ReaddirResult();
+  const result: ReaddirResult = { files: [], dirs: [], others: [] };
   for (const { stats, path: pathInFolder } of walkdir(path, options)) {
     if (stats.isFile())
       result.files.push(pathInFolder);
