@@ -39,7 +39,7 @@ export interface ReaddirResult {
  */
 export async function forEachPath (
   path: string,
-  callback: (path: string, stats: fs.Stats) => void,
+  callback: (path: string, stats: fs.Stats) => void|Promise<void>,
   options: PathOptions = {}
 ) {
   if (
@@ -48,15 +48,19 @@ export async function forEachPath (
     (options.match instanceof RegExp && !options.match.test(path))
   ) return;
 
+  const promises = [];
+
   const stats = await stat(path);
   if (stats.isDirectory()) {
     const dir = await readdir(path);
     if (options.sort instanceof Function)
       dir.sort(options.sort);
     for (const pathInDir of dir)
-      await forEachPath(join(path, pathInDir.toString()), callback, options);
+      promises.push(forEachPath(join(path, pathInDir.toString()), callback, options));
   }
-  await callback(path, stats);
+
+  promises.push(callback(path, stats));
+  await Promise.all(promises);
 }
 
 /**
