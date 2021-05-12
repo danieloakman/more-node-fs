@@ -4,13 +4,13 @@
     "esModuleInterop": true,
     "target": "es6",
     "moduleResolution": "node",
-    "sourceMap": true,
+    "sourceMap": false,
     "outDir": "dist",
     "declaration": true,
     "alwaysStrict": true,
     "checkJs": true,
     "allowJs": true,
-    "declarationMap": true,
+    "declarationMap": false,
     "lib": ["ES2015"]
   },
   "exclude": ["node_modules", "test", "dist", "benchmark"]
