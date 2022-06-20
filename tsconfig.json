@@ -8,8 +8,8 @@
     "outDir": "dist",
     "declaration": true,
     "alwaysStrict": true,
-    "checkJs": true,
-    "allowJs": true,
+    "checkJs": false,
+    "allowJs": false,
     "declarationMap": false,
     "lib": ["ES2015"]
   },
